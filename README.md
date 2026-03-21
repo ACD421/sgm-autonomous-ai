@@ -1,40 +1,66 @@
-# SGM Autonomous AI: Self-Improving Intelligence with Sparse Geometric Mutation
+<div align="center">
 
-**Author:** Andrew Dorman ([Hollow Point Labs](https://github.com/ACD421))
+# SGM Autonomous AI
+
+### Self-Improving Intelligence with Binary Locking
+
+**Mutation-evaluate-lock architecture | Memory routing | Coalition locking**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+</div>
 
 ## Overview
 
-This repository contains experimental systems for building autonomous, self-improving AI using the SGM (Sparse Geometric Mutation) substrate. SGM's convergence-based binary locking provides the foundation: learned capabilities are permanently preserved while new skills are acquired without interference.
+Three experimental architectures exploring autonomous self-improvement with SGM's binary locking primitive as the safety mechanism.
 
-Three architectures are explored:
+## Architectures
 
-1. **Personal AI** -- Memory routing separates factual recall (external JSON store) from reasoning (SGM-locked weights), preventing memory tasks from competing with learned capabilities.
-2. **Self-Improving AI** -- A mutation-evaluate-lock loop that autonomously discovers and preserves improvements across reasoning, coding, and memory modules.
-3. **SGM Transformer** -- Real transformer architectures (2-layer, multi-head attention) with coalition locking at head/layer granularity and memory-mapped persistent storage.
+### 1. Personal AI -- Memory-Routed Intelligence
 
-## Architecture
+Separates **factual recall** (explicit memory) from **weight-based reasoning** (learned behavior).
 
-### Personal AI (`personal_ai/`)
+```
+Query --> Router --> Memory Store (facts, dates, specifics)
+                 --> Reasoning Engine (inference, generalization)
+```
 
-| File | Description |
-|------|-------------|
-| `sgm_personal_ai.py` | Unified personal AI: Memory Router (external JSON store for facts/episodes), SGM Blocks (weight-based learning for reasoning/coding/style), Anchored Base (frozen coordinate system). 512d, 8-head, 4-layer config. |
-| `sgm_memory_router.py` | Memory routing module: separates memory retrieval from weight-based learning. Core model stays frozen/SGM-locked while a tiny trainable router directs queries to an external key-value memory store. |
+### 2. Self-Improving AI -- Mutation-Evaluate-Lock
 
-### Self-Improving AI (`self_improving/`)
+```
+1. MUTATE    -- Propose changes to own parameters
+2. EVALUATE  -- Test against validation set
+3. LOCK      -- If improvement confirmed, lock changed dimensions
+4. REPEAT    -- Continue with remaining plastic dimensions
+```
 
-| File | Description |
-|------|-------------|
-| `sgm_self_improving_ai.py` | Self-improvement loop: base transformer with block-level locking, mutate-evaluate-lock cycle, module system (reasoning/coding/memory), autonomous training scheduler. BlockStorage with mmap weights. |
-| `sgm_100task_demo.py` | Killer demo: 100 sequential micro-tasks (style, facts, preferences, formatting). Block-level locking (32 params/block). Measures task 1 retention after task 100. Success: retention ~1.0x with locked << total params. |
+Binary locking ensures improvements are **permanent and irreversible**. Bad mutations cannot overwrite good ones.
 
-### SGM Transformer (`transformer/`)
+### 3. SGM Transformer -- Coalition Locking
 
-| File | Description |
-|------|-------------|
-| `sgm_transformer.py` | 2-layer transformer with coalition locking at head/layer granularity. d_model=256, 4 attention heads, FFN=1024. Memory-mapped append-only storage. Real language tasks with constant-time inference. |
-| `sgm_transformer_tuned.py` | Tuned variant: threshold 0.001->0.0001 (10x more sensitive), min_lock=50 params/task, n_samples=100, float16 support. Same coalition detection logic with calibrated thresholds. |
+Binary locking at **head and layer granularity** in a transformer:
+
+- Individual attention heads lock when converged
+- Entire layers lock as functional units
+- Locked coalitions form permanent feature detectors
+
+## Structure
+
+```
+personal_ai/          # Memory-routed intelligence
+self_improving/        # Mutation-evaluate-lock loop
+transformer/           # Coalition locking in transformers
+```
+
+## Related
+
+- [SGM-Substrate](https://github.com/ACD421/sgm-substrate) -- Full intelligence architecture
+- [SGM Continual Learning](https://github.com/ACD421/sgm-continual-learning) -- Core binary locking primitive
+
+## Author
+
+**Andrew C. Dorman** -- [Hollow Point Labs](https://github.com/ACD421)
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT
