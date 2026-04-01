@@ -5,9 +5,9 @@ SGM PERSONAL AI - UNIFIED
 Self-improving AI with integrated memory routing.
 
 Architecture:
-  [Memory Router] → External JSON store (facts, episodes)
-  [SGM Blocks]    → Weight-based learning (reasoning, coding, style)
-  [Anchored Base] → Frozen coordinate system
+  [Memory Router] -> External JSON store (facts, episodes)
+  [SGM Blocks]    -> Weight-based learning (reasoning, coding, style)
+  [Anchored Base] -> Frozen coordinate system
 
 Memory tasks use external store, NOT model weights.
 All other tasks use SGM block locking.
@@ -547,15 +547,15 @@ class SGMAI:
             if " is " in fact:
                 parts = fact.split(" is ", 1)
                 self.router.memory.store_fact(parts[0], parts[1])
-                return f"✓ Remembered: {parts[0]} is {parts[1]}"
+                return f"[OK] Remembered: {parts[0]} is {parts[1]}"
             self.router.memory.store_episode(fact)
-            return f"✓ Remembered: {fact}"
-        
+            return f"[OK] Remembered: {fact}"
+
         if p.startswith("forget "):
             q = prompt[7:].strip()
             if self.router.memory.forget(q):
-                return f"✓ Forgot: {q}"
-            return f"✗ No memory for: {q}"
+                return f"[OK] Forgot: {q}"
+            return f"[X] No memory for: {q}"
         
         if p in ["list memories", "what do you know", "show memories"]:
             facts = self.router.memory.list_facts()
@@ -563,7 +563,7 @@ class SGMAI:
                 return "I don't have any memories yet."
             lines = ["Here's what I remember:"]
             for f in facts[:15]:
-                lines.append(f"  • {f['key']} → {f['value']}")
+                lines.append(f"  - {f['key']} -> {f['value']}")
             return "\n".join(lines)
         
         return None
@@ -722,10 +722,10 @@ def run_training(ai: SGMAI, iterations: int):
         
         if it % 25 == 0 or result["improved"]:
             stats = ai.storage.stats()
-            print(f"\n[{it}] {cat}/{name}: {result['init']:.3f}→{result['loss']:.3f} ({result['improve']:.1f}%)")
+            print(f"\n[{it}] {cat}/{name}: {result['init']:.3f}->{result['loss']:.3f} ({result['improve']:.1f}%)")
             print(f"  Locked: {stats['pct_locked']:.1f}%", end="")
             if result["improved"]:
-                print(f" ✓ +{result['locked']} blocks")
+                print(f" [OK] +{result['locked']} blocks")
             else:
                 print()
         

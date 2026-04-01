@@ -11,7 +11,7 @@ Changes:
 - Track locked params + inference latency
 
 Success criteria:
-- Retention ≈ 1.0x
+- Retention ~= 1.0x
 - Locked params << total params  
 - Inference time unchanged
 
@@ -660,7 +660,7 @@ def run_killer_demo(path: str = "./sgm_personal", n_tasks: int = 100, quick: boo
   TASK #1 AFTER {n_tasks-1} MORE TASKS:
     Initial loss: {task_losses[task1_name]:.4f}
     Final loss:   {task1_final:.4f}
-    Retention:    {task1_ret:.2f}x {'✓' if task1_ret < 1.5 else '✗'}
+    Retention:    {task1_ret:.2f}x {'[OK]' if task1_ret < 1.5 else '[X]'}
 
   ALL TASKS:
     Mean retention: {np.mean(all_retentions):.2f}x
@@ -684,22 +684,22 @@ def run_killer_demo(path: str = "./sgm_personal", n_tasks: int = 100, quick: boo
     success = True
     
     if task1_ret > 1.5:
-        print(f"    ✗ Task #1 retention too high ({task1_ret:.2f}x > 1.5x)")
+        print(f"    [X] Task #1 retention too high ({task1_ret:.2f}x > 1.5x)")
         success = False
     else:
-        print(f"    ✓ Task #1 retention OK ({task1_ret:.2f}x)")
-    
+        print(f"    [OK] Task #1 retention OK ({task1_ret:.2f}x)")
+
     if stats['pct_locked'] > 50:
-        print(f"    ✗ Too many params locked ({stats['pct_locked']:.1f}% > 50%)")
+        print(f"    [X] Too many params locked ({stats['pct_locked']:.1f}% > 50%)")
         success = False
     else:
-        print(f"    ✓ Locked params OK ({stats['pct_locked']:.1f}%)")
-    
+        print(f"    [OK] Locked params OK ({stats['pct_locked']:.1f}%)")
+
     if avg_inference > 100:
-        print(f"    ✗ Inference too slow ({avg_inference:.0f}ms > 100ms)")
+        print(f"    [X] Inference too slow ({avg_inference:.0f}ms > 100ms)")
         success = False
     else:
-        print(f"    ✓ Inference OK ({avg_inference:.1f}ms)")
+        print(f"    [OK] Inference OK ({avg_inference:.1f}ms)")
     
     print(f"\n  {'='*50}")
     if success:

@@ -6,9 +6,9 @@ Fixes memory regression by separating memory from core model weights.
 
 Architecture:
   [ Core Model (frozen/SGM) ]
-            ↓
+            v
   [ Memory Router (tiny, trainable) ]
-            ↓
+            v
   [ External Memory Store (key-value) ]
 
 Memory is RETRIEVED, not re-learned into weights.
@@ -519,11 +519,11 @@ class MemoryAugmentedModel:
             if " is " in fact:
                 parts = fact.split(" is ", 1)
                 self.router.memory.store_fact(parts[0].strip(), parts[1].strip())
-                return f"✓ Remembered: {parts[0].strip()} is {parts[1].strip()}"
+                return f"[OK] Remembered: {parts[0].strip()} is {parts[1].strip()}"
             else:
                 self.router.memory.store_episode(fact, context="explicit remember")
-                return f"✓ Remembered: {fact}"
-        
+                return f"[OK] Remembered: {fact}"
+
         # FORGET command
         if prompt_lower.startswith("forget ") or prompt_lower.startswith("forget: "):
             query = prompt[7:].strip()
@@ -532,8 +532,8 @@ class MemoryAugmentedModel:
             if key_hash in self.router.memory.memories["facts"]:
                 del self.router.memory.memories["facts"][key_hash]
                 self.router.memory.save()
-                return f"✓ Forgot: {query}"
-            return f"✗ No memory found for: {query}"
+                return f"[OK] Forgot: {query}"
+            return f"[X] No memory found for: {query}"
         
         # LIST command
         if prompt_lower in ["list memories", "what do you know about me", "show memories", "list what you know"]:
@@ -542,7 +542,7 @@ class MemoryAugmentedModel:
                 return "I don't have any stored memories yet."
             lines = ["Here's what I remember:"]
             for key_hash, fact in list(facts.items())[:20]:
-                lines.append(f"  • {fact['key']} → {fact['value']}")
+                lines.append(f"  - {fact['key']} -> {fact['value']}")
             if len(facts) > 20:
                 lines.append(f"  ... and {len(facts) - 20} more")
             return "\n".join(lines)
@@ -701,11 +701,11 @@ def run_demo():
         # Simulate trust gating (threshold 0.3)
         if result['should_retrieve'] and result['trust_weight'] >= 0.3:
             if result['memories']:
-                print(f"  → PREPEND: {result['memories'][0]['data'].get('value', 'N/A')}")
+                print(f"  -> PREPEND: {result['memories'][0]['data'].get('value', 'N/A')}")
             else:
-                print(f"  → No matching memory")
+                print(f"  -> No matching memory")
         else:
-            print(f"  → Skip memory (trust too low or not retrieve)")
+            print(f"  -> Skip memory (trust too low or not retrieve)")
     
     # Test explicit commands
     print("\n[TESTING EXPLICIT COMMANDS]")
@@ -739,11 +739,11 @@ def run_demo():
         print(f"  {k}: {v}")
     
     print("\n[SUCCESS] Memory router with:")
-    print("  ✓ N-gram embeddings (better than char-bag)")
-    print("  ✓ Trust-gated memory prepending")
-    print("  ✓ Explicit commands (remember/forget/list)")
-    print("  ✓ Daily write budget")
-    print("  ✓ External storage (not in model weights)")
+    print("  [OK] N-gram embeddings (better than char-bag)")
+    print("  [OK] Trust-gated memory prepending")
+    print("  [OK] Explicit commands (remember/forget/list)")
+    print("  [OK] Daily write budget")
+    print("  [OK] External storage (not in model weights)")
 
 
 def integrate_with_sgm():

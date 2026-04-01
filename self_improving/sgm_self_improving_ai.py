@@ -6,7 +6,7 @@ A self-improving AI system using the validated SGM memory substrate.
 
 Components:
 1. Base transformer with block-level locking
-2. Self-improvement loop (mutate → evaluate → lock)
+2. Self-improvement loop (mutate -> evaluate -> lock)
 3. Module system (reasoning, coding, memory)
 4. Autonomous training scheduler
 
@@ -629,7 +629,7 @@ class SelfImprover:
                 print(f"  Locked: {stats['locked_blocks']} blocks ({stats['pct_locked']:.1f}%)")
                 
                 if result["improved"]:
-                    print(f"  ✓ IMPROVED - locked {result['locked']} new blocks")
+                    print(f"  [OK] IMPROVED - locked {result['locked']} new blocks")
             
             # Checkpoint periodically
             if iteration % self.cfg.checkpoint_interval == 0 and iteration > 0:
@@ -669,7 +669,7 @@ class SelfImprover:
             init = initial_metrics[cat]
             final = final_metrics[cat]
             change = (init - final) / init * 100
-            arrow = "↓" if change > 0 else "↑"
+            arrow = "v" if change > 0 else "^"
             print(f"{cat:<15} | {init:>10.4f} | {final:>10.4f} | {arrow}{abs(change):>8.1f}%")
         
         print(f"\nStorage: {stats['locked_params']:,} params locked ({stats['pct_locked']:.1f}%)")

@@ -13,7 +13,7 @@ Architecture:
 - d_model = 256
 - 4 attention heads (d_head = 64)
 - FFN = 1024
-- Total params ≈ 3.4M
+- Total params ~= 3.4M
 
 Storage:
 - mmap-backed locked weights

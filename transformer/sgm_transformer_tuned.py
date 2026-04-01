@@ -5,9 +5,9 @@ SGM TRANSFORMER - COALITION LOCKING (TUNED)
 Your original method with calibrated thresholds.
 
 Changes from original:
-- threshold: 0.001 → 0.0001 (10x more sensitive)
+- threshold: 0.001 -> 0.0001 (10x more sensitive)
 - min_lock: 50 params per task (prevents under-locking)
-- n_samples: 50 → 100 (better coverage)
+- n_samples: 50 -> 100 (better coverage)
 - float16 support
 
 Your coalition detection logic is unchanged.
@@ -359,7 +359,7 @@ class SGMTrainer:
                 
                 group_delta = compute_loss() - base_loss
                 
-                # If group ablation hurts more than sum of individuals → emergent importance
+                # If group ablation hurts more than sum of individuals -> emergent importance
                 individual_sum = np.sum(causal_scores[group])
                 if group_delta > individual_sum * 1.5:  # 50% synergy threshold
                     coalition_credits[group] += 1
